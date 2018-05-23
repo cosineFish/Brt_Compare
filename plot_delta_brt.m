@@ -19,29 +19,34 @@ function plot_delta_brt(time_with_data,delta_brt_k,delta_brt_v)
     xData = linspace(time_with_data(1),time_with_data(end),5);   
     delta_brt = delta_brt_k;
     frequencyStr = K_frequency_group;receiver = 'k';
+    y_min = min([delta_brt_k delta_brt_v]);y_max = max([delta_brt_k delta_brt_v]);
+    %y_delta = y_max - y_min;
+    y_range = ceil(y_max - y_min);
+%     if y_delta < 30
+%         y_range = ceil(y_delta * 10)/10;
+%     elseif y_delta < 100
+%         y_range = ceil(y_delta * 10)/20;
+%     else
+%         y_range = ceil(y_delta * 10)/40;
+%     end
+    channel_num = 0;
+    y_tick_min = ceil(y_min);y_tick_max = y_tick_min + y_range;
     for fig_num = 1:2
        figure('name',[num2str(fig_num),receiver,msgStr,'曲线']);
-       figure_num = figure_num + 1;channel_num = 0;
+       figure_num = figure_num + 1;
        for sub_fig = 1:7
             channel_num = channel_num + 1;
             subplot(4,2,sub_fig);
-            plot(datenum(time_with_data) ,delta_brt(:,channel_num),'r-');
+            plot(datenum(time_with_data) ,delta_brt(:,sub_fig),'r-');
             ax = gca;
             ax.XTick = datenum(xData);
             datetick(ax,'x','HH:MM','keepticks');
-%             y_tick_min = minValue(channel_num);
-%             if maxValue(channel_num) - minValue(channel_num) <= 2
-%                 y_tick_max = y_tick_min + 1;
-%                 set(gca,'ytick',y_tick_min:0.2:y_tick_max);
-%             else
-%                 y_tick_max = y_tick_min + y_range;
-%                 set(gca,'ytick',y_tick_min:(y_range/5):y_tick_max);
-%             end
-%             ylim = [y_tick_min y_tick_max];
-%             set(gca, 'Ylim',ylim );
+            set(gca,'ytick',y_tick_min(channel_num):(y_range(channel_num)/5):y_tick_max(channel_num));
+            ylim = [y_tick_min(channel_num) y_tick_max(channel_num)];
+            set(gca, 'Ylim',ylim );
             %xlabel('时间/(时:分)');
             ylabel([msgStr,'/K']);       
-            title([frequencyStr{channel_num},'GHz']);
+            title([frequencyStr{sub_fig},'GHz']);
             set(gca,'FontSize',14);
             grid on;
             hold on;

@@ -1,4 +1,4 @@
-function plot_brt(HRA_time,HRA_Brt ,RPG_time,RPG_Brt,receiver)
+function plot_brt(HRA_time,HRA_Brt ,RPG_time,RPG_Brt,receiver )
     global K_frequency_group;
     global V_frequency_group;
     K_frequency_group = { '22.24', '23.04', '23.84',...
@@ -14,6 +14,7 @@ function plot_brt(HRA_time,HRA_Brt ,RPG_time,RPG_Brt,receiver)
     else
         return;
     end
+    msgStr = '亮温';
     y_min_HRA = min(HRA_Brt);y_min_RPG = min(RPG_Brt);
 	y_min = floor(min(y_min_HRA,y_min_RPG));
     y_max_HRA = max(HRA_Brt);y_max_RPG = max(RPG_Brt);
@@ -27,7 +28,7 @@ function plot_brt(HRA_time,HRA_Brt ,RPG_time,RPG_Brt,receiver)
     xData = linspace(HRA_time(1),HRA_time(end),5);
     channel_num = 0;
     for fig_num = 1:2
-       figure('name',[num2str(fig_num),receiver,'-亮温曲线']);
+       figure('name',[num2str(fig_num),'-',receiver,msgStr,'曲线']);
        figure_num = figure_num + 1;
        for sub_fig = 1:4
             channel_num = channel_num + 1;
@@ -50,7 +51,7 @@ function plot_brt(HRA_time,HRA_Brt ,RPG_time,RPG_Brt,receiver)
             ylim = [y_tick_min y_tick_max];
             set(gca, 'Ylim',ylim );
             xlabel('时间/(时:分)');
-            ylabel('亮温/K');       
+            ylabel([msgStr,'/K']);       
             title([frequencyStr{channel_num},'GHz']);
             set(gca,'FontSize',14);
             grid on;
@@ -58,7 +59,7 @@ function plot_brt(HRA_time,HRA_Brt ,RPG_time,RPG_Brt,receiver)
             legend('HRA','RPG');
        end
        suptitle([dateStr,'-',receiver,...
-            '波段接收机各通道的亮温对比曲线']);
+            '波段接收机各通道的',msgStr,'对比曲线']);
        set (gcf,'Position',[100,100,1080,800], 'color','w');
        hold off;
        save2word([dateStr,'brt_compare.doc'],'-f');

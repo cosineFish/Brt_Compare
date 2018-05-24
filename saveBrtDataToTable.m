@@ -1,4 +1,4 @@
-function saveBrtDataToTable(HRA_time,HRA_K_Brt,HRA_V_Brt ,RPG_time,RPG_K_Brt,RPG_V_Brt)
+function [time_with_data,delta_brt_k,delta_brt_v] = saveBrtDataToTable(HRA_time,HRA_K_Brt,HRA_V_Brt ,RPG_time,RPG_K_Brt,RPG_V_Brt)
     global xlsFilePath;
     global dateStr;
     global K_frequency_group;
@@ -6,6 +6,7 @@ function saveBrtDataToTable(HRA_time,HRA_K_Brt,HRA_V_Brt ,RPG_time,RPG_K_Brt,RPG
     global rnames;
     rnames = {'均值/K','标准差/K','峰峰值/K'};
     data_no_empty = ismember(HRA_time,RPG_time);
+    time_with_data = HRA_time(data_no_empty);
     HRA_K_Brt_SameTime = HRA_K_Brt(data_no_empty,:);
     RPG_K_Brt_SameTime = RPG_K_Brt(data_no_empty,:);
     HRA_V_Brt_SameTime = HRA_V_Brt(data_no_empty,:);

@@ -56,10 +56,10 @@ function plot_delta_brt(time_with_data,delta_brt_k,delta_brt_v)
        set (gcf,'Position',[100,100,1080,900], 'color','w');
        hold off;
        save2word([dateStr,'delta_brt_compare.doc'],'-f');
-       if fig_num == 2
-           break;
-       else
+       if fig_num == 1
            frequencyStr = V_frequency_group;receiver = 'v';delta_brt = delta_brt_v;
+       else
+           break;
        end
     end
 end

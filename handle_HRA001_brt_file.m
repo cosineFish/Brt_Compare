@@ -26,5 +26,5 @@ function [HRA_time,HRA_K_Brt ,HRA_V_Brt] = handle_HRA001_brt_file(filepath,filen
 %         dateStr = [startDate,'~',endDate];
 %     end
     global xlsFilePath;
-    xlsFilePath = ['data_',startMonth,'.xls'];
+    xlsFilePath = ['data_mod_',startMonth,'.xls'];
 end

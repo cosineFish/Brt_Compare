@@ -5,12 +5,22 @@ function [time_with_data,delta_brt_k,delta_brt_v] = saveBrtDataToTable(HRA_time,
     global V_frequency_group;
     global rnames;
     rnames = {'均值/K','标准差/K','峰峰值/K'};
-    data_no_empty = ismember(HRA_time,RPG_time);
-    time_with_data = HRA_time(data_no_empty);
-    HRA_K_Brt_SameTime = HRA_K_Brt(data_no_empty,:);
-    RPG_K_Brt_SameTime = RPG_K_Brt(data_no_empty,:);
-    HRA_V_Brt_SameTime = HRA_V_Brt(data_no_empty,:);
-    RPG_V_Brt_SameTime = RPG_V_Brt(data_no_empty,:);
+    HRA_data_no_empty = ismember(HRA_time,RPG_time);RPG_data_no_empty = ismember(RPG_time,HRA_time);
+    %same_time = ismember(HRA_data_no_empty,RPG_data_no_empty);HRA_data_no_empty = HRA_data_no_empty(same_time);
+    %same_time = ismember(RPG_data_no_empty,HRA_data_no_empty);RPG_data_no_empty = RPG_data_no_empty(same_time);
+    time_with_data = RPG_time(RPG_data_no_empty);
+    hra_time_with_data = HRA_time(HRA_data_no_empty);%hra_time_with_data = unique(hra_time_with_data);%rpg_time_with_data = RPG_time(RPG_data_no_empty);
+    if length(time_with_data) ~= length(hra_time_with_data)
+        delta_time = datenum(time_with_data) - datenum(hra_time_with_data(1:length(time_with_data)));
+        logic_time = (abs(delta_time) > 0);
+        error_time = hra_time_with_data(logic_time);
+        error_msg = strcat('!!!check error at HRA brt data:',datestr(error_time(1)));
+        disp(error_msg);        
+    end
+    HRA_K_Brt_SameTime = HRA_K_Brt(HRA_data_no_empty,:);%HRA_K_Brt_SameTime = unique(HRA_K_Brt_SameTime);
+    RPG_K_Brt_SameTime = RPG_K_Brt(RPG_data_no_empty,:);
+    HRA_V_Brt_SameTime = HRA_V_Brt(HRA_data_no_empty,:);%HRA_V_Brt_SameTime = unique(HRA_V_Brt_SameTime);
+    RPG_V_Brt_SameTime = RPG_V_Brt(RPG_data_no_empty,:);
     delta_brt_k = HRA_K_Brt_SameTime - RPG_K_Brt_SameTime;
     delta_brt_v = HRA_V_Brt_SameTime - RPG_V_Brt_SameTime;
     average_k = mean(delta_brt_k);average_v = mean(delta_brt_v);
@@ -24,6 +34,7 @@ function [time_with_data,delta_brt_k,delta_brt_v] = saveBrtDataToTable(HRA_time,
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     title = ['波段接收机亮温差值(测量日期:',dateStr,')'];
     cnames_K = K_frequency_group;
+    global sheetNum;sheetNum = 1;
     %write2xls(filePath , title , values , sheetName , length)
     write2xls(xlsFilePath,['K',title],cnames_K,data_brt_k,length(cnames_K));  
     cnames_V = V_frequency_group;

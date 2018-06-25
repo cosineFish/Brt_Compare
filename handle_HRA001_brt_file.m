@@ -18,13 +18,13 @@ function [HRA_time,HRA_K_Brt ,HRA_V_Brt] = handle_HRA001_brt_file(filepath,filen
     HRA_V_Brt(:,5) = [];%去掉倒数第4个通道
     format_onlyDate = 'yymmdd';
     startDate = datestr(HRA_time(1),format_onlyDate);startMonth = datestr(HRA_time(1),'yymm');
-    %endDate = datestr(time(end),format_onlyDate);
-    global dateStr;dateStr = startDate;
-%     if startDate == endDate
-%         dateStr = startDate;
-%     else
-%         dateStr = [startDate,'~',endDate];
-%     end
+    endDate = datestr(HRA_time(end),format_onlyDate);
+    global dateStr;%dateStr = startDate;
+    if startDate == endDate
+        dateStr = startDate;
+    else
+        dateStr = [startDate,'~',endDate];
+    end
     global xlsFilePath;
     xlsFilePath = ['data_mod_',startMonth,'.xls'];
 end

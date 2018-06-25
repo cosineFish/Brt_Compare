@@ -36,10 +36,11 @@ function plot_brt(HRA_time,HRA_Brt ,RPG_time,RPG_Brt,receiver )
                 break;
             end
             subplot(2,2,sub_fig);
-            plot(datenum(HRA_time) ,HRA_Brt(:,channel_num),'r-',datenum(RPG_time),RPG_Brt(:,channel_num),'g-');
+            plot(datenum(HRA_time) ,HRA_Brt(:,channel_num),'r.',datenum(RPG_time),RPG_Brt(:,channel_num),'g.');
             ax = gca;
             ax.XTick = datenum(xData);
-            datetick(ax,'x','HH:MM','keepticks');
+            %datetick(ax,'x','HH:MM','keepticks');
+            datetick(ax,'x','dd HH:MM','keepticks');
             y_tick_min = minValue(channel_num);
             if maxValue(channel_num) - minValue(channel_num) <= 2
                 y_tick_max = y_tick_min + 1;
@@ -50,7 +51,7 @@ function plot_brt(HRA_time,HRA_Brt ,RPG_time,RPG_Brt,receiver )
             end
             ylim = [y_tick_min y_tick_max];
             set(gca, 'Ylim',ylim );
-            xlabel('时间/(时:分)');
+            xlabel('时间/(日期 时:分)');
             ylabel([msgStr,'/K']);       
             title([frequencyStr{channel_num},'GHz']);
             set(gca,'FontSize',14);
@@ -63,5 +64,6 @@ function plot_brt(HRA_time,HRA_Brt ,RPG_time,RPG_Brt,receiver )
        set (gcf,'Position',[100,100,1080,800], 'color','w');
        hold off;
        save2word([dateStr,'brt_compare.doc'],'-f');
+       %saveas(gcf,[dateStr,'-f',num2str(figure_num)],'png');
     end
 end

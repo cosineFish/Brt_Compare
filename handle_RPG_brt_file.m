@@ -1,6 +1,6 @@
 function [RPG_time,RPG_K_Brt,RPG_V_Brt] = handle_RPG_brt_file(filepath,filename)
     format_data = '';
-    for i = 1:1:23%前6个是时间，第7个是雨滴，后面14个是电压,最后2个是角度
+    for i = 1:1:23%前6个是时间，第7个是雨滴，后面14个是亮温,最后2个是角度
         format_data = strcat(format_data,'%f ');
     end
     complete_file = strcat(filepath,filename);

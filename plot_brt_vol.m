@@ -1,4 +1,4 @@
-function plot_brt(HRA_time,HRA_Brt ,RPG_time,RPG_Brt,receiver )
+function plot_brt_vol(HRA_time,HRA_Brt ,Vol_time,HRA_Vol, RPG_time,RPG_Brt,receiver )
     global K_frequency_group;
     global V_frequency_group;
     K_frequency_group = { '22.24', '23.04', '23.84',...
@@ -15,6 +15,7 @@ function plot_brt(HRA_time,HRA_Brt ,RPG_time,RPG_Brt,receiver )
         return;
     end
     msgStr = '亮温';
+    %亮温坐标范围
     y_min_HRA = min(HRA_Brt);y_min_RPG = min(RPG_Brt);
 	y_min = floor(min(y_min_HRA,y_min_RPG));
     y_max_HRA = max(HRA_Brt);y_max_RPG = max(RPG_Brt);
@@ -22,6 +23,11 @@ function plot_brt(HRA_time,HRA_Brt ,RPG_time,RPG_Brt,receiver )
     minValue = floor(y_min(:,:)*10)/10;maxValue= ceil(y_max(:,:)*10)/10;
     deltaValue = maxValue - minValue;
     y_range = ceil(max(deltaValue));
+    %电压值坐标范围
+    minVol(1:7) = min(HRA_Vol(:,1:7));
+    maxVol(1:7) = max(HRA_Vol(:,1:7));
+    ppVolValue = maxVol - minVol;
+    vol_delta = ceil(max(ppVolValue) * 100) / 100.0;
     global figure_num;
     %global legend_rect_up;
     global dateStr;
@@ -36,11 +42,9 @@ function plot_brt(HRA_time,HRA_Brt ,RPG_time,RPG_Brt,receiver )
                 break;
             end
             subplot(2,2,sub_fig);
-            plot(datenum(HRA_time) ,HRA_Brt(:,channel_num),'r',datenum(RPG_time),RPG_Brt(:,channel_num),'g');
-            ax = gca;
-            ax.XTick = datenum(xData);
-            datetick(ax,'x','HH:MM','keepticks');
-            %datetick(ax,'x','dd HH:MM','keepticks');
+            yyaxis left%左边亮温
+            plot(datenum(HRA_time) ,HRA_Brt(:,channel_num),'r-',datenum(RPG_time),RPG_Brt(:,channel_num),'g-');
+            %ylabel([msgStr,'/K']);  
             y_tick_min = minValue(channel_num);
             if maxValue(channel_num) - minValue(channel_num) <= 2
                 y_tick_max = y_tick_min + 1;
@@ -50,18 +54,32 @@ function plot_brt(HRA_time,HRA_Brt ,RPG_time,RPG_Brt,receiver )
                 set(gca,'ytick',y_tick_min:(y_range/5):y_tick_max);
             end
             ylim = [y_tick_min y_tick_max];
-            set(gca, 'Ylim',ylim );
+            set(gca, 'Ylim',ylim ); 
+            yyaxis right%右边电压
+            plot(datenum(Vol_time),HRA_Vol(:,channel_num),'b-.');
+            %ylabel('电压/V');
+            min_vol_value = floor(minVol(channel_num) * 100) / 100.0;
+            max_vol_value = min_vol_value + vol_delta;
+            if min_vol_value == max_vol_value
+                vol_delta = 0.1;
+            end
+            ylnew = [min_vol_value  max_vol_value];
+            set(gca, 'Ylim', ylnew);
+            set(gca,'ytick',min_vol_value:(vol_delta/5):(min_vol_value + vol_delta));
+            ax = gca;
+            ax.XTick = datenum(xData);
+            datetick(ax,'x','HH:MM','keepticks');
+            %datetick(ax,'x','dd HH:MM','keepticks');
 %             xlabel('时间/(日期 时:分)');
-            xlabel('时间/(时:分)');
-            ylabel([msgStr,'/K']);       
+            xlabel('时间/(时:分)');    
             title([frequencyStr{channel_num},'GHz']);
             set(gca,'FontSize',14);
             grid on;
             hold on;
-            legend('HRA','RPG');
+            legend('HRA','RPG','HRA-Vol','Location','northwest');
        end
        suptitle([dateStr,'-',receiver,...
-            '波段接收机各通道的',msgStr,'对比曲线']);
+            '波段接收机各通道的',msgStr,'(左侧)对比曲线与电压(右侧)曲线']);
        set (gcf,'Position',[100,100,1080,800], 'color','w');
        hold off;
        save2word([dateStr,'brt_compare.doc'],'-f');

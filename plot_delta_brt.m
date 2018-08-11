@@ -33,11 +33,11 @@ function plot_delta_brt(time_with_data,delta_brt_k,delta_brt_v)
        for sub_fig = 1:7
             channel_num = channel_num + 1;
             subplot(4,2,sub_fig);
-            plot(datenum(time_with_data) ,delta_brt(:,sub_fig),'r.');
+            plot(datenum(time_with_data) ,delta_brt(:,sub_fig),'r');
             ax = gca;
             ax.XTick = datenum(xData);
-            %datetick(ax,'x','HH:MM','keepticks');
-            datetick(ax,'x','dd HH:MM','keepticks');
+            datetick(ax,'x','HH:MM','keepticks');
+            %datetick(ax,'x','dd HH:MM','keepticks');
             set(gca,'ytick',y_tick_min(channel_num):(y_range(channel_num)/5):y_tick_max(channel_num));
             ylim = [y_tick_min(channel_num) y_tick_max(channel_num)];
             set(gca, 'Ylim',ylim );
@@ -45,7 +45,7 @@ function plot_delta_brt(time_with_data,delta_brt_k,delta_brt_v)
             %xlabel('时间/(年/月/日 时:分)');
             ylabel([msgStr,'/K']);       
             title([frequencyStr{sub_fig},'GHz']);
-            set(gca,'FontSize',14);
+            set(gca,'FontSize',12);
             grid on;
             hold on;
        end

@@ -1,10 +1,10 @@
 function [time_with_data,delta_brt_k,delta_brt_v] = saveBrtDataToTable(HRA_time,HRA_K_Brt,HRA_V_Brt ,RPG_time,RPG_K_Brt,RPG_V_Brt)
-    global xlsFilePath;
+%     global xlsFilePath;
     global dateStr;
-    global K_frequency_group;
-    global V_frequency_group;
+%     global K_frequency_group;
+%     global V_frequency_group;
     global rnames;
-    rnames = {'均值/K','标准差/K','峰峰值/K'};
+    rnames = {'frequency/GHz','average/K','std/K','(max-min)/K'};
     HRA_data_no_empty = ismember(HRA_time,RPG_time);RPG_data_no_empty = ismember(RPG_time,HRA_time);
     %same_time = ismember(HRA_data_no_empty,RPG_data_no_empty);HRA_data_no_empty = HRA_data_no_empty(same_time);
     %same_time = ismember(RPG_data_no_empty,HRA_data_no_empty);RPG_data_no_empty = RPG_data_no_empty(same_time);
@@ -32,11 +32,15 @@ function [time_with_data,delta_brt_k,delta_brt_v] = saveBrtDataToTable(HRA_time,
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %保存亮温数据表格
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    title = ['波段接收机亮温差值(测量日期:',dateStr,')'];
-    cnames_K = K_frequency_group;
-    global sheetNum;sheetNum = 1;
+%     title = ['波段接收机亮温差值(测量日期:',dateStr,')'];
+%     cnames_K = K_frequency_group;
+    fre_k = [ 22.24, 23.04, 23.84,25.44, 26.24, 27.84, 31.40];   
+%     global sheetNum;sheetNum = 1;
     %write2xls(filePath , title , values , sheetName , length)
-    write2xls(xlsFilePath,['K',title],cnames_K,data_brt_k,length(cnames_K));  
-    cnames_V = V_frequency_group;
-    write2xls(xlsFilePath,['V',title],cnames_V,data_brt_v,length(cnames_V));
+    write2csv([dateStr,'-k-delta.csv'],rnames,[fre_k;data_brt_k]);
+    fre_v = [51.26, 52.28, 53.86,54.94, 56.66, 57.30, 58.00];
+    write2csv([dateStr,'-v-delta.csv'],rnames,[fre_v;data_brt_v]);
+%     write2xls(xlsFilePath,['K',title],cnames_K,data_brt_k,length(cnames_K));  
+%     cnames_V = V_frequency_group;
+%     write2xls(xlsFilePath,['V',title],cnames_V,data_brt_v,length(cnames_V));
 end

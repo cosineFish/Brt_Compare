@@ -1,4 +1,4 @@
-function [HRA_time,HRA_K_Brt ,HRA_V_Brt] = handle_HRA001_brt_file(filepath,filename)
+function [HRA_time,HRA_K_Brt ,HRA_V_Brt] = handle_HRA_brt_file_specify_time(filepath,filename,specify_time)
     format_data = '';
     for i = 1:1:22%前6个是时间，后面16个是亮温
         format_data = strcat(format_data,'%f ');
@@ -16,6 +16,14 @@ function [HRA_time,HRA_K_Brt ,HRA_V_Brt] = handle_HRA001_brt_file(filepath,filen
     end
     HRA_K_Brt(:,7) = [];%去除第7个通道
     HRA_V_Brt(:,5) = [];%去掉倒数第4个通道
+    %只取指定日期的数据
+    valid_time_logic = ...
+        (datenum(HRA_time) >= datenum(specify_time)) & ...
+        (datenum(HRA_time) < datenum(specify_time+hours(24)));
+    HRA_time = HRA_time(valid_time_logic);
+    HRA_K_Brt = HRA_K_Brt(valid_time_logic,1:7);
+    HRA_V_Brt = HRA_V_Brt(valid_time_logic,1:7);
+    column_length = length(HRA_time);
     %去掉时间重复的数据
     hra_valid_time = (datenum(HRA_time(2:end) - HRA_time(1:end-1)) ~= 0);hra_valid_time(column_length) = 1;
     HRA_time = HRA_time(hra_valid_time);
